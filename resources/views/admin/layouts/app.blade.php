@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@yield('title', 'Swippy Admin Dashboard')</title>
+    <link rel="icon" href="{{ asset('assets/images/icons/favicon.ico') }}" type="image/x-icon">
+
+
+    <!-- CSS Assets -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.css" rel="stylesheet">
+    <!-- Toastr CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
+
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --swippy-primary: #00ff90;
+            --swippy-dark: #0f172a;
+            --swippy-light: #f8fafc;
+            --swippy-secondary: #64748b;
+            --swippy-accent: #3b82f6;
+            --swippy-danger: #ef4444;
+            --swippy-warning: #f59e0b;
+            --swippy-success: #10b981;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            background-color: #f1f5f9;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--swippy-dark);
+            color: white;
+            min-height: 100vh;
+            padding: 1.5rem 1rem;
+            width: 280px;
+            transition: all 0.3s ease;
+            position: fixed;
+            z-index: 1000;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-collapsed {
+            width: 80px;
+            overflow: hidden;
+        }
+
+        .sidebar-collapsed .sidebar-text {
+            display: none;
+        }
+
+        .sidebar-collapsed .nav-link {
+            justify-content: center;
+        }
+
+        .sidebar .nav-link {
+            color: var(--swippy-light);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.25rem;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--swippy-primary);
+            transform: translateX(5px);
+        }
+
+        .sidebar .nav-link i {
+            font-size: 1.2rem;
+            min-width: 24px;
+        }
+
+        .dropdown-menu {
+            background-color: rgba(15, 15, 15, 0.95);
+            border: none;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            margin-left: 1rem;
+            animation: fadeIn 0.2s ease-out;
+            inset: 0px auto auto 0px !important;
+            margin: 0px !important;
+            transform: translate(5px, 3px) !important;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropdown-menu a {
+            color: var(--swippy-light);
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--swippy-primary);
+            padding-left: 1.25rem;
+        }
+
+        .swippy-highlight {
+            color: var(--swippy-primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 285px;
+            transition: all 0.3s ease;
+            padding: 1.5rem;
+            min-height: 100vh;
+        }
+
+        .main-content-collapsed {
+            margin-left: 80px;
+        }
+
+        /* Cards */
+        .card-glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: none;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .card-glass:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-stat {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-stat::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 144, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s ease;
+            opacity: 0;
+        }
+
+        .card-stat:hover::before {
+            opacity: 1;
+            animation: shine 1.5s infinite;
+        }
+
+
+
+        @keyframes shine {
+            0% {
+                transform: rotate(45deg) translateX(-100%);
+            }
+
+            100% {
+                transform: rotate(45deg) translateX(100%);
+            }
+        }
+
+
+        /* Badges */
+        .badge {
+            padding: 0.5em 0.75em;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-primary {
+            background-color: var(--swippy-primary);
+            color: var(--swippy-dark);
+        }
+
+        /* Buttons */
+        .btn-swippy {
+            background-color: var(--swippy-primary);
+            color: var(--swippy-dark);
+            font-weight: 600;
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .btn-swippy:hover {
+            background-color: #00e681;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 255, 144, 0.3);
+        }
+
+        .btn-swippy-outline {
+            border: 2px solid var(--swippy-primary);
+            color: var(--swippy-primary);
+            background: transparent;
+            font-weight: 600;
+        }
+
+        .btn-swippy-outline:hover {
+            background-color: var(--swippy-primary);
+            color: var(--swippy-dark);
+        }
+
+        .btn-swippy-cancel {
+            background-color: #ff4d4f;
+            /* red color */
+            color: white;
+            font-weight: 600;
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-swippy-cancel:hover {
+            background-color: #ff1a1a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(255, 77, 79, 0.3);
+        }
+
+
+
+        /* Table */
+        .table {
+            --bs-table-striped-bg: rgba(0, 255, 144, 0.03);
+        }
+
+        .table-hover tbody tr {
+            transition: all 0.2s;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(0, 255, 144, 0.1) !important;
+            transform: translateX(5px);
+        }
+
+        /* Progress bars */
+        .progress {
+            height: 8px;
+            border-radius: 4px;
+            background-color: rgba(0, 255, 144, 0.1);
+        }
+
+        .progress-bar {
+            background-color: var(--swippy-primary);
+        }
+
+        /* Animations */
+        .animate-bounce {
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Toggle switch */
+        .form-check-input:checked {
+            background-color: var(--swippy-primary);
+            border-color: var(--swippy-primary);
+        }
+
+        /* Notification badge */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 20px;
+            height: 20px;
+            background-color: var(--swippy-danger);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 1050;
+            }
+
+            .sidebar-collapsed {
+                transform: translateX(0);
+                width: 280px;
+            }
+
+            .sidebar-collapsed .sidebar-text {
+                display: inline;
+            }
+
+            .sidebar-collapsed .nav-link {
+                justify-content: flex-start;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .sidebar-show {
+                transform: translateX(0);
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--swippy-primary);
+            border-radius: 4px;
+        }
+
+        /* Chart container */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        /* Search box */
+
+        /* Remove default browser outline, shadow on focus */
+        input,
+        select,
+        textarea {
+            border: 2px solid #d1d5db;
+            /* Light neutral border */
+            border-radius: 0.5rem;
+            outline: none;
+            box-shadow: none;
+            transition: border-color 0.2s ease-in-out;
+        }
+
+        /* On focus - no blue, no shadow */
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none !important;
+            border-color: #00ff90 !important;
+            /* Your theme green */
+            box-shadow: none !important;
+        }
+
+
+        .search-box {
+            position: relative;
+            max-width: 300px;
+        }
+
+        .search-box input {
+            padding-left: 2.5rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e2e8f0;
+            background-color: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--swippy-primary);
+            box-shadow: 0 0 0 3px rgba(0, 255, 144, 0.2);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--swippy-secondary);
+        }
+
+        /* User dropdown */
+        .user-dropdown .dropdown-toggle::after {
+            display: none;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--swippy-primary);
+        }
+
+        /* Mobile menu button */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--swippy-dark);
+        }
+
+        @media (max-width: 992px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+
+        /* Add this to your existing CSS */
+
+        /* Fix for dropdown overlap */
+        .dropdown-menu {
+            position: static !important;
+            /* Changed from absolute to static */
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            box-shadow: none !important;
+            animation: none !important;
+        }
+
+        /* For the user dropdown specifically (if you want it to behave differently) */
+        .user-dropdown .dropdown-menu {
+            position: absolute !important;
+            right: 0;
+            left: auto;
+            margin-top: 0.5rem;
+            z-index: 1050;
+        }
+
+        /* Make sure parent dropdown has relative positioning */
+        .dropdown {
+            position: relative;
+        }
+
+        /* Adjust the nav-link padding when dropdown is open */
+        .nav-link.dropdown-toggle[aria-expanded="true"] {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+            color: var(--swippy-primary) !important;
+        }
+
+        /* Ensure dropdown items are visible */
+        .dropdown-item {
+            padding: 0.5rem 1rem !important;
+            white-space: normal !important;
+        }
+    </style>
+
+    @yield('css')
+</head>
+
+<body>
+
+    <!-- Mobile Menu Button -->
+    @include('admin.layouts.partials.mobile-menu-btn')
+
+    <div class="d-flex">
+        <!-- Sidebar -->
+        @include('admin.layouts.partials.sidebar')
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            @include('admin.layouts.partials.header')
+
+            <!-- Main Content Area -->
+            @yield('content')
+        </main>
+    </div>
+
+    <!-- JavaScript Assets -->
+    <!-- jQuery MUST come first -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Then Toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <!-- Then Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+
+    <!-- Custom JS -->
+    <script>
+        // Initialize Toastr with options
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "preventDuplicates": true
+        };
+
+        // Show flash messages
+        @if (Session::has('success'))
+            toastr.success("{{ Session::get('success') }}");
+        @endif
+
+        @if (Session::has('error'))
+            toastr.error("{{ Session::get('error') }}");
+        @endif
+
+        @if (Session::has('info'))
+            toastr.info("{{ Session::get('info') }}");
+        @endif
+
+        @if (Session::has('warning'))
+            toastr.warning("{{ Session::get('warning') }}");
+        @endif
+
+        // Show validation errors
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                toastr.error("{{ $error }}");
+            @endforeach
+        @endif
+        // Sidebar toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.querySelector('.sidebar');
+            const mainContent = document.querySelector('.main-content');
+            const sidebarToggle = document.querySelector('.sidebar-toggle');
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+
+            // Desktop toggle
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('sidebar-collapsed');
+                    mainContent.classList.toggle('main-content-collapsed');
+
+                    const icon = this.querySelector('i');
+                    if (sidebar.classList.contains('sidebar-collapsed')) {
+                        icon.classList.remove('bi-chevron-double-left');
+                        icon.classList.add('bi-chevron-double-right');
+                    } else {
+                        icon.classList.remove('bi-chevron-double-right');
+                        icon.classList.add('bi-chevron-double-left');
+                    }
+                });
+            }
+
+            // Mobile toggle
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('sidebar-show');
+                });
+            }
+
+            // Add animations when scrolling
+            const animateOnScroll = function() {
+                const elements = document.querySelectorAll('.animate__animated');
+
+                elements.forEach(element => {
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const windowHeight = window.innerHeight;
+
+                    if (elementPosition < windowHeight - 100) {
+                        const animationClass = element.classList[1];
+                        element.classList.add(animationClass);
+                    }
+                });
+            };
+
+            window.addEventListener('scroll', animateOnScroll);
+            animateOnScroll(); // Run once on page load
+        });
+
+        // Initialize charts if they exist on the page
+        function initCharts() {
+            // Sales Chart
+            const salesCtx = document.getElementById('salesChart');
+            if (salesCtx) {
+                new Chart(salesCtx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                        datasets: [{
+                            label: 'Sales',
+                            data: [12000, 19000, 15000, 22000, 24000, 18000, 25000],
+                            borderColor: '#00ff90',
+                            backgroundColor: 'rgba(0, 255, 144, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            borderWidth: 3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Revenue Chart
+            const revenueCtx = document.getElementById('revenueChart');
+            if (revenueCtx) {
+                new Chart(revenueCtx.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Electronics', 'Fashion', 'Home & Garden', 'Others'],
+                        datasets: [{
+                            data: [42, 28, 18, 12],
+                            backgroundColor: [
+                                '#3b82f6',
+                                '#10b981',
+                                '#f59e0b',
+                                '#ef4444'
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '70%',
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Initialize charts when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initCharts);
+    </script>
+
+    @yield('js')
+</body>
+
+</html>
