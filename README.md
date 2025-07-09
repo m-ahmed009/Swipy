@@ -62,10 +62,12 @@ php artisan serve
 📸 Screenshots
 
 # Client Side
-![Screenshot (97)](https://github.com/user-attachments/assets/cd8cbbe1-661d-4cf8-af47-5042afe9cff0)
+![image](https://github.com/user-attachments/assets/c2adc50c-fec4-4c0b-a1ad-9e472ad9eac6)
+
 
 # Admin Pannel
-![Screenshot (96)](https://github.com/user-attachments/assets/656a82b0-1c2b-4a45-9da0-4450b76e4f63)
+![image](https://github.com/user-attachments/assets/9ce10e7f-7622-411f-92a1-c4179f37bd3c)
+
 
 
 🙋‍♂️ Author
