@@ -62,7 +62,8 @@ php artisan serve
 📸 Screenshots
 
 # Client Side
-![image](https://github.com/user-attachments/assets/c2adc50c-fec4-4c0b-a1ad-9e472ad9eac6)
+![image](https://github.com/user-attachments/assets/b7e7e4d9-df81-45aa-8e73-a7eaaa12ca56)
+
 
 
 # Admin Pannel
