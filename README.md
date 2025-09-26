@@ -62,12 +62,17 @@ php artisan serve
 📸 Screenshots
 
 # Client Side
-![image](https://github.com/user-attachments/assets/b7e7e4d9-df81-45aa-8e73-a7eaaa12ca56)
 
+<img width="1366" height="616" alt="image" src="https://github.com/user-attachments/assets/6c595eea-454c-4c67-ab63-4a19509e5623" />
+
+<img width="1366" height="612" alt="image" src="https://github.com/user-attachments/assets/94a68074-efcb-4dca-9d36-11944de24ad2" />
 
 
 # Admin Pannel
-![image](https://github.com/user-attachments/assets/9ce10e7f-7622-411f-92a1-c4179f37bd3c)
+
+<img width="1366" height="617" alt="image" src="https://github.com/user-attachments/assets/25858878-2424-4fb8-ac81-5a21440b7a1c" />
+
+<img width="1366" height="618" alt="image" src="https://github.com/user-attachments/assets/8ba2e4f2-a726-4dad-84cf-e864b92a4886" />
 
 
 
