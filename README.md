@@ -2,6 +2,9 @@
 
 **Swippy** is a complete Laravel-based eCommerce solution built with a clean admin panel, product management system, dynamic cart, and secure checkout flow. It's designed for real-world online stores with full-stack Laravel development practices.
 
+
+<img width="1366" height="616" alt="image" src="https://github.com/user-attachments/assets/e9930d84-ca02-499a-9521-f9190514616f" />
+
 ---
 
 ## 🚀 Features
