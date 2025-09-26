@@ -136,19 +136,19 @@
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle">Categories</a>
                     <ul class="dropdown-menu main-category-menu">
-                        @foreach ($categories as $category)
+                        @foreach ($mainCategories as $category)
                             <li class="dropdown-submenu">
-                                <a href="{{ route('shop.category', ['category' => $category->slug]) }}">
+                                {{-- <a href="{{ route('shop.category', ['category' => $category->slug]) }}">
                                     {{ $category->name }}
-                                </a>
+                                </a> --}}
 
                                 @if ($category->subcategories->count())
                                     <ul class="dropdown-menu sub-category-menu">
                                         @foreach ($category->subcategories as $subcategory)
                                             <li>
-                                                <a href="{{ route('shop.subcategory', ['category' => $mainCategory->slug, 'subcategory' => $subCategory->slug]) }}">
+                                                {{-- <a href="{{ route('shop.subcategory', ['category' => $mainCategory->slug, 'subcategory' => $subCategory->slug]) }}">
                                                     {{ $subCategory->name }}
-                                                </a>
+                                                </a> --}}
 
                                             </li>
                                         @endforeach
